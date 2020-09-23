@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package br.com.infox.telas;
-
+ 
 // para manipular comandos SQL
 import java.sql.*;
 
@@ -25,8 +25,11 @@ public class TelaLogin extends javax.swing.JFrame {
     PreparedStatement pst = null;
     // objeto  matriz  que recebe  o resultado  do comando SQL
     ResultSet rs = null;
-
+    //pegar data
+   
+ 
     public void logar() {
+        
         // pesquisar usário e senha  no BD
         // ? - vao  ser substituidos  pelos campos  de formulario, na ordem
         String sql = "SELECT * FROM tbusuarios WHERE login=? AND senha=?";
@@ -46,13 +49,27 @@ public class TelaLogin extends javax.swing.JFrame {
 
             //testa se o usuario existe
             if (rs.next()) {
+                
                 // caso positivo - acessa a tela principal
+                TelaPrincipal principal = new TelaPrincipal();
+                
+            
+                //mostra a tela principal
+                principal.setVisible(true);
+                
+                //fechar a tela login
+                this.dispose();
+                
+                //fechar a conexao com o banco de dados
+                conexao.close();
+                
             } else {
                 // caso negativo - exibe mensagem
                 JOptionPane.showMessageDialog(null, "Usuário e/ou Senha inválido");
             }
 
         } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
         }
     }
 
@@ -151,7 +168,7 @@ public class TelaLogin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        // TODO add your handling code here:
+        //chamando o metodo login
         logar();
     }//GEN-LAST:event_btnLoginActionPerformed
 
