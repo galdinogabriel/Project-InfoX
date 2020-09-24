@@ -25,7 +25,6 @@ public class TelaLogin extends javax.swing.JFrame {
     PreparedStatement pst = null;
     // objeto  matriz  que recebe  o resultado  do comando SQL
     ResultSet rs = null;
-    //pegar data
    
  
     public void logar() {
