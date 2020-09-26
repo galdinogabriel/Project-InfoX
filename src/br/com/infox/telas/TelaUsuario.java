@@ -151,6 +151,44 @@ public class TelaUsuario extends javax.swing.JFrame {
         }
     }
 
+    // metódo para remover usuários
+    private void remover() {
+        // pede confirmação para remover usuário
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja remover este usuário ?", "Atenção", JOptionPane.YES_NO_OPTION);
+        
+        if(confirma == JOptionPane.YES_OPTION){
+            
+            String sql = "DELETE FROM tbusuarios WHERE iduser=?";
+            
+            try {
+                pst  = conexao.prepareStatement(sql);
+                
+                // recebe o campo id do formulario, e envia para o delete
+                pst.setString(1,txtUsuId.getText());
+                
+                // executa o comando SQL
+                int apagado = pst.executeUpdate();
+                
+                // testa se removeu
+                if(apagado > 0){
+                    JOptionPane.showMessageDialog(null, "Usuário removido com sucesso");
+                    
+                     //limpando os campos do formulário
+                     
+                    txtUsuId.setText(null);
+                    txtUsuNome.setText(null);
+                    txtUsuFone.setText(null);
+                    txtUsuLogin.setText(null);
+                    txtUsuSenha.setText(null);
+                    
+                }
+                
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null,e);
+            }
+        }
+
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -175,7 +213,7 @@ public class TelaUsuario extends javax.swing.JFrame {
         btnUsuUpdate = new javax.swing.JButton();
         btnUsuDelete = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Usuários");
         setResizable(false);
 
@@ -229,6 +267,11 @@ public class TelaUsuario extends javax.swing.JFrame {
         btnUsuDelete.setToolTipText("Remover");
         btnUsuDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnUsuDelete.setPreferredSize(new java.awt.Dimension(80, 80));
+        btnUsuDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUsuDeleteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -296,9 +339,9 @@ public class TelaUsuario extends javax.swing.JFrame {
                     .addComponent(txtUsuLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
                 .addGap(101, 101, 101)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnUsuCreate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnUsuRead, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnUsuRead, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnUsuUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnUsuDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(120, 120, 120))
@@ -328,6 +371,11 @@ public class TelaUsuario extends javax.swing.JFrame {
         // TODO add your handling code here:
         alterar();
     }//GEN-LAST:event_btnUsuUpdateActionPerformed
+
+    private void btnUsuDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuDeleteActionPerformed
+        // TODO add your handling code here:
+        remover();
+    }//GEN-LAST:event_btnUsuDeleteActionPerformed
 
     /**
      * @param args the command line arguments

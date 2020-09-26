@@ -66,7 +66,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Gabriel Henrique Galdino Matos");
-        jLabel2.setBorder(null);
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/infox/icones/umbrela.png"))); // NOI18N
         jLabel3.setText("jLabel3");
@@ -79,6 +78,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         MenCad.setText("Cadastro");
 
         MenCadCli.setText("Cliente");
+        MenCadCli.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenCadCliActionPerformed(evt);
+            }
+        });
         MenCad.add(MenCadCli);
 
         MenCadOs.setText("OS");
@@ -208,6 +212,12 @@ public class TelaPrincipal extends javax.swing.JFrame {
         usuario.setVisible(true);
         
     }//GEN-LAST:event_menCadUsuActionPerformed
+
+    private void MenCadCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenCadCliActionPerformed
+        // TODO add your handling code here:
+        TelaCliente cliente = new TelaCliente();
+        cliente.setVisible(true);
+    }//GEN-LAST:event_MenCadCliActionPerformed
 
     /**
      * @param args the command line arguments
