@@ -63,6 +63,7 @@ public class TelaOS extends javax.swing.JFrame {
                 txtOsTecnico.setText(null);
                 txtOsValor.setText(null);
                 txtOsIdCli.setText(null);
+                txtOsEquipamento.setText(null);
             }
 
         } catch (Exception e) {
@@ -71,101 +72,145 @@ public class TelaOS extends javax.swing.JFrame {
 
     }
 
-    private void adicionar() {
-        String sql = "INSERT INTO tbos(equipamento,defeito,servico,tecnico,valor,idcli) VALUES(?,?,?,?,?,?)";
+    private boolean cunsultarIdCli() {
+        String sql = "SELECT * FROM tbclientes WHERE idcli = ?";
+
         try {
-            // prepara execução do comando SQL
+            // prepara a execução do comando sql
             pst = conexao.prepareStatement(sql);
+            // associando o campo do formulario com select
+            pst.setString(1, txtOsIdCli.getText());
+            // executando a query - montando o array
+            rs = pst.executeQuery();
 
-            // recebe os campos dos formulários, na ordem
-            pst.setString(1, txtOsEquipamento.getText());
-            pst.setString(2, txtOsDefeito.getText());
-            pst.setString(3, txtOsServico.getText());
-            pst.setString(4, txtOsTecnico.getText());
-            pst.setString(5, txtOsValor.getText());
-            pst.setString(6, txtOsIdCli.getText());
-
-            // validação dos campos obrigatório
-            if ((txtOsEquipamento.getText().isEmpty())
-                    || (txtOsDefeito.getText().isEmpty())
-                    || (txtOsValor.getText().isEmpty())
-                    || (txtOsIdCli.getText().isEmpty())
-                    || txtOsServico.getText().isEmpty()
-                    || txtOsTecnico.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Prencha todos os campos obrigatórios");
+            // testa se encontro
+            if (rs.next()) {
+                // caso positivo
+                return true;
             } else {
-                // executar comando SQL
-                int adicionado = pst.executeUpdate();
+                return false;
+            }
 
-                // testa se adicionou
-                if (adicionado > 0) {
-                    JOptionPane.showMessageDialog(null, "Os adicionada com sucesso");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            return false;
+        }
 
-                    //limpandSo os campos do formulário
-                    txtOsEquipamento.setText(null);
-                    txtOsDate.setText(null);
-                    txtOsDefeito.setText(null);
-                    txtOsServico.setText(null);
-                    txtOsTecnico.setText(null);
-                    txtOsValor.setText(null);
-                    txtOsIdCli.setText(null);
+    }
+
+    private void adicionar() {
+        //variavel booleana que diz se existe ou nao um id cliente na tabela clientes
+        boolean idCliEstaCadastrada = cunsultarIdCli();
+
+        //caso o id cliente exista, a executa o bloco de codigo para adicionar os
+        if (idCliEstaCadastrada) {
+
+            String sql = "INSERT INTO tbos(equipamento,defeito,servico,tecnico,valor,idcli) VALUES(?,?,?,?,?,?)";
+            try {
+                // prepara execução do comando SQL
+                pst = conexao.prepareStatement(sql);
+
+                // recebe os campos dos formulários, na ordem
+                pst.setString(1, txtOsEquipamento.getText());
+                pst.setString(2, txtOsDefeito.getText());
+                pst.setString(3, txtOsServico.getText());
+                pst.setString(4, txtOsTecnico.getText());
+                pst.setString(5, txtOsValor.getText());
+                pst.setString(6, txtOsIdCli.getText());
+
+                // validação dos campos obrigatório
+                if ((txtOsEquipamento.getText().isEmpty())
+                        || (txtOsDefeito.getText().isEmpty())
+                        || (txtOsValor.getText().isEmpty())
+                        || (txtOsIdCli.getText().isEmpty())
+                        || txtOsServico.getText().isEmpty()
+                        || txtOsTecnico.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Prencha todos os campos obrigatórios");
+                } else {
+                    // executar comando SQL
+                    int adicionado = pst.executeUpdate();
+
+                    // testa se adicionou
+                    if (adicionado > 0) {
+                        JOptionPane.showMessageDialog(null, "Os adicionada com sucesso");
+
+                        //limpandSo os campos do formulário
+                        txtOsEquipamento.setText(null);
+                        txtOsDate.setText(null);
+                        txtOsDefeito.setText(null);
+                        txtOsServico.setText(null);
+                        txtOsTecnico.setText(null);
+                        txtOsValor.setText(null);
+                        txtOsIdCli.setText(null);
+
+                    }
 
                 }
+            } catch (Exception e) {
 
+                JOptionPane.showMessageDialog(null, e);
             }
-        } catch (Exception e) {
 
-            JOptionPane.showMessageDialog(null, "Não foi possível adicionar OS, verifiqu se o ID cliente existe");
+        } else {
+            JOptionPane.showMessageDialog(null, "ID Cliente informado não existe");
         }
     }
     // metódo para alterar usuarios
 
     private void alterar() {
-        String sql = "UPDATE tbos SET equipamento=?, defeito=?, servico=?, tecnico=?, valor=?, idcli=? WHERE os=?";
+        //variavel booleana que diz se existe ou nao um id cliente na tabela clientes
+        boolean idCliEstaCadastrada = cunsultarIdCli();
 
-        try {
-            //prepara a execução do comando sql
-            pst = conexao.prepareStatement(sql);
+        if (idCliEstaCadastrada) {
+            String sql = "UPDATE tbos SET equipamento=?, defeito=?, servico=?, tecnico=?, valor=?, idcli=? WHERE os=?";
 
-            //recebe os campos do formulário, na ordem e envia para o update
-            pst.setString(1, txtOsEquipamento.getText());
-            pst.setString(2, txtOsDefeito.getText());
-            pst.setString(3, txtOsServico.getText());
-            pst.setString(4, txtOsTecnico.getText());
-            pst.setString(5, txtOsValor.getText());
-            pst.setString(6, txtOsIdCli.getText());
-            pst.setString(7, txtOsOs.getText());
+            try {
+                //prepara a execução do comando sql
+                pst = conexao.prepareStatement(sql);
 
-            //validação dos campos obrigatórios
-            if ((txtOsEquipamento.getText().isEmpty())
-                    || (txtOsDefeito.getText().isEmpty())
-                    || (txtOsValor.getText().isEmpty())
-                    || (txtOsIdCli.getText().isEmpty())
-                    || (txtOsOs.getText().isEmpty())
-                    || txtOsServico.getText().isEmpty()
-                    || txtOsTecnico.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Prencha todos os campos obrigatórios");
-            } else {
-                // executar comando SQL
-                int adicionado = pst.executeUpdate();
+                //recebe os campos do formulário, na ordem e envia para o update
+                pst.setString(1, txtOsEquipamento.getText());
+                pst.setString(2, txtOsDefeito.getText());
+                pst.setString(3, txtOsServico.getText());
+                pst.setString(4, txtOsTecnico.getText());
+                pst.setString(5, txtOsValor.getText());
+                pst.setString(6, txtOsIdCli.getText());
+                pst.setString(7, txtOsOs.getText());
 
-                // testa se adicionou
-                if (adicionado > 0) {
-                    JOptionPane.showMessageDialog(null, "OS alterado com sucesso");
+                //validação dos campos obrigatórios
+                if ((txtOsEquipamento.getText().isEmpty())
+                        || (txtOsDefeito.getText().isEmpty())
+                        || (txtOsValor.getText().isEmpty())
+                        || (txtOsIdCli.getText().isEmpty())
+                        || (txtOsOs.getText().isEmpty())
+                        || txtOsServico.getText().isEmpty()
+                        || txtOsTecnico.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Prencha todos os campos obrigatórios");
+                } else {
+                    // executar comando SQL
+                    int adicionado = pst.executeUpdate();
 
-                    //limpandSo os campos do formulário
-                    txtOsDate.setText(null);
-                    txtOsEquipamento.setText(null);
-                    txtOsDefeito.setText(null);
-                    txtOsServico.setText(null);
-                    txtOsTecnico.setText(null);
-                    txtOsValor.setText(null);
-                    txtOsIdCli.setText(null);
+                    // testa se adicionou
+                    if (adicionado > 0) {
+                        JOptionPane.showMessageDialog(null, "OS alterado com sucesso");
+
+                        //limpandSo os campos do formulário
+                        txtOsDate.setText(null);
+                        txtOsEquipamento.setText(null);
+                        txtOsDefeito.setText(null);
+                        txtOsServico.setText(null);
+                        txtOsTecnico.setText(null);
+                        txtOsValor.setText(null);
+                        txtOsIdCli.setText(null);
+                    }
                 }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Não foi possivél alterar o usuário! Verifique se ID cliente e OS existem");
+        }else{
+            JOptionPane.showMessageDialog(null, "ID cliente informado não existe");
         }
+
     }
     // metódo para remover usuários
 
@@ -403,9 +448,9 @@ public class TelaOS extends javax.swing.JFrame {
                     .addComponent(jLabel8)
                     .addComponent(txtOsIdCli, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnCreateCli)
-                    .addComponent(btnDeleteCli)
+                    .addComponent(btnDeleteCli, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnUpdateCli, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnReadCli))
                 .addGap(91, 91, 91))
